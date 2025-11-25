@@ -1,13 +1,13 @@
 
 import { getPostsByCategory } from '@/db/query/queries';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
 const CategoryPage = async ({ params }) => {
  const { categoryName } = await params;
 
   const posts = await getPostsByCategory(categoryName);
-
 
   return (
     <div>
@@ -24,7 +24,7 @@ const CategoryPage = async ({ params }) => {
                         />
                         <h2>{p.title}</h2>
                         <p>{p.content}</p>
-                        
+                         <Link href={`/slug/${p.slug}`}>Details</Link>
                     </div>
         ))
       )}

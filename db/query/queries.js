@@ -60,4 +60,33 @@ export async function getPostsByCategory(categoryName) {
 }
 
 
+export async function getPostsBySlug(slug) {
+    const posts = await postsModel.findOne({slug:slug}).lean();
+    return posts;
+}
+
+// export async function getPostsBySlugA(slug) {
+//     const posts = await postsModel
+//     .find()
+//     .sort({createdAt: -1})
+//     .limit(1)
+//     .lean();
+//     return posts;
+// }
+
+// export async function getPostsBySlugA(slug) {
+//     const posts = await postsModel.aggregate([
+//       {$sort :{createdAt: -1}},
+//       {
+//         $group:{
+//           _id : "$catagory",
+//           post : { $first: "$$ROOT"}
+//         }
+//       },
+//       {$replaceRoot: {newPost: "$post"}},
+//       {$sort :{createdAt: -1}},
+//     ])
+
+//     return posts;
+// }
 

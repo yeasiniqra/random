@@ -6,6 +6,7 @@ const Category = async () => {
     const categories = await getAllCategory();
     return (
         <div className="flex gap-2.5 justify-center bg-gray-900">
+             <Link className='text-white' href="/">Home</Link>
             {categories.map((cat) => (
                 <div key={cat._id}>
                     <Link className='text-white' href={`/${cat.name}`}>{cat.name}</Link>

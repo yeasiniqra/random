@@ -1,10 +1,11 @@
 import { getAllPosts } from '@/db/query/queries';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
 const Posts = async () => {
   const posts = await getAllPosts();
-
+  
   return (
     <div className="flex gap-2.5 justify-center mt-5 flex-wrap">
       {posts.map((post) => {
@@ -25,6 +26,7 @@ const Posts = async () => {
             />
             <h2 className="text-lg font-semibold mt-2">{post.title}</h2>
             <p className="text-sm text-gray-600">{post.content}</p>
+            <Link href={`/slug/${post.slug}`}>Details</Link>
           </div>
         );
       })}
