@@ -7,6 +7,7 @@ import { userModel } from "../schema/user-models";
 import { signIn } from "@/auth";
 
 export async function createUser(user) {
+  await dbConnect();
   try {
     const createdUser = await userModel.create(user);
     return createdUser;
@@ -17,6 +18,7 @@ export async function createUser(user) {
 
 
 export async function getUsers(){
+  await dbConnect();
   const users = await userModel.find().lean();
   return users;
 }
@@ -32,35 +34,27 @@ export async function getAllCategory(){
 
 
 export async function getAllPosts(){
+  await dbConnect();
   const post = await postsModel.find().lean()
   return post;
 }
 
 export async function createPost(data) {
+  await dbConnect();
   const post = await postsModel.create(data);
   return post;
 }
 
-// export async function getPostsByCategory(categoryId) {
-//      const posts = await postsModel.find({ 
-//        category: new mongoose.Types.ObjectId(categoryId)
-//     }).lean();
-
-//     console.log("category", posts);
-//     return posts;
-// }
-
 export async function getPostsByCategory(categoryName) {
-
+    await dbConnect();
     const posts = await postsModel.find().lean(); // fetch all posts
-
     const filtered = posts.filter(p => p.name === categoryName);
-
     return filtered;
 }
 
 
 export async function getPostsBySlug(slug) {
+    await dbConnect();
     const posts = await postsModel.findOne({slug:slug}).lean();
     return posts;
 }
