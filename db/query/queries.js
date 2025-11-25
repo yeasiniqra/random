@@ -45,12 +45,18 @@ export async function createPost(data) {
   return post;
 }
 
+// export async function getPostsByCategory(categoryName) {
+//     await dbConnect();
+//     const posts = await postsModel.find().lean(); // fetch all posts
+//     const filtered = posts.filter(p => p.name === categoryName);
+//     return filtered;
+// }
+
 export async function getPostsByCategory(categoryName) {
-    await dbConnect();
-    const posts = await postsModel.find().lean(); // fetch all posts
-    const filtered = posts.filter(p => p.name === categoryName);
-    return filtered;
+  await dbConnect();
+  return await postsModel.find({ name:categoryName }).lean();
 }
+
 
 
 export async function getPostsBySlug(slug) {

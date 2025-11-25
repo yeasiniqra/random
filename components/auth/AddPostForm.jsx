@@ -9,6 +9,14 @@ const AddPostForm = ({ categories }) => {
 
   const router = useRouter();
 
+  const slugify = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-') 
+      .replace(/^-+|-+$/g, '');
+}
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -20,7 +28,7 @@ const AddPostForm = ({ categories }) => {
       const finalData = {
         title: formData.get("title"),
         name: formData.get("category") || null,
-        slug: formData.get("slug"),
+        slug: slugify(formData.get("title")),
         content: formData.get("content"),
         excerpt: formData.get("excerpt"),
         featuredImage: formData.get("featuredImage") || "", // now URL
@@ -82,7 +90,7 @@ const AddPostForm = ({ categories }) => {
                   className="w-full px-4 py-3 bg-[#1a1a1a] border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 />
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-sm text-gray-400 mb-1">Slug</label>
                 <input
                   name="slug"
@@ -90,7 +98,7 @@ const AddPostForm = ({ categories }) => {
                   placeholder="Slug"
                   className="w-full px-4 py-3 bg-[#1a1a1a] border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* Excerpt */}
