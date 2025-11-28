@@ -18,7 +18,7 @@ const SinglePost = async ({params}) => {
                 />
                 <h2 className="text-lg font-semibold mt-2">{post.title}</h2>
                 <p className="text-sm text-gray-600">{post.content}</p>
-                <p className="text-sm text-gray-600">{post.name}</p>
+                <p className="text-sm text-gray-600">Author Name :{post.authorName}</p>
             </div>
         </div>
     );

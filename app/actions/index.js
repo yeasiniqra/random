@@ -30,6 +30,16 @@ export async function registerUser(formData) {
 }
 
 
+
+
+export async function login(formData) {
+  await signIn("credentials", {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+}
+
+
 // export async function Login(formData) {
 //   const signIndata = await signIn("credentials", {
 //     email: formData.get("email"),

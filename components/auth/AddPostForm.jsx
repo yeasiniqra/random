@@ -3,12 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const AddPostForm = ({ categories }) => {
+const AddPostForm = ({ categories, session }) => {
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
 
   const router = useRouter();
-
   const slugify = (text) => {
     return text
       .toLowerCase()
@@ -17,45 +16,66 @@ const AddPostForm = ({ categories }) => {
       .replace(/^-+|-+$/g, '');
 }
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    try {
+    const onSubmit = async (e) => {
+      e.preventDefault();
+      setError("");
       setUploading(true);
 
-      const formData = new FormData(e.currentTarget);
-      const finalData = {
-        title: formData.get("title"),
-        name: formData.get("category") || null,
-        slug: slugify(formData.get("title")),
-        content: formData.get("content"),
-        excerpt: formData.get("excerpt"),
-        featuredImage: formData.get("featuredImage") || "", // now URL
-        category: formData.get("category") || null,
-        tags: formData.get("tags")?.split(",").map((t) => t.trim()) || [],
-        status: formData.get("status"),
-        isEditorsPick: formData.get("isEditorsPick") === "on",
-      };
+      try {
+        const formData = new FormData(e.currentTarget);
 
-      const res = await fetch("/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(finalData),
-      });
+        // Upload image first
+        const imageFile = formData.get("featuredImage");
+        let imageUrl = "";
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Something went wrong");
+        if (imageFile && imageFile.size > 0) {
+          const imageData = new FormData();
+          imageData.append("file", imageFile);
+          imageData.append("upload_preset", "upload_preset"); // Replace
+          imageData.append("cloud_name", "ddgwhf0bu"); // Replace if needed
+
+          const res = await fetch("https://api.cloudinary.com/v1_1/ddgwhf0bu/image/upload", {
+            method: "POST",
+            body: imageData,
+          });
+
+          const imgResponse = await res.json();
+          imageUrl = imgResponse.secure_url;
+        }
+
+        const finalData = {
+          title: formData.get("title"),
+          name: formData.get("category") || null,
+          slug: slugify(formData.get("title")),
+          content: formData.get("content"),
+          excerpt: formData.get("excerpt"),
+          featuredImage: imageUrl,       
+          authorName : session?.user?.name,
+          category: formData.get("category") || null,
+          tags: formData.get("tags")?.split(",").map((t) => t.trim()) || [],
+          status: formData.get("status"),
+          isEditorsPick: formData.get("isEditorsPick") === "on",
+        };
+
+        const resPost = await fetch("/api/posts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(finalData),
+        });
+
+        if (!resPost.ok) {
+          const data = await resPost.json();
+          throw new Error(data.message || "Something went wrong");
+        }
+
+        router.push("/");
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setUploading(false);
       }
+    };
 
-      router.push("/");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setUploading(false);
-    }
-  };
 
   return (
     <>
@@ -115,12 +135,19 @@ const AddPostForm = ({ categories }) => {
             {/* Featured Image URL */}
             <div>
               <label className="block text-sm text-gray-400 mb-1">Featured Image URL</label>
-              <input
+              {/* <input
                 name="featuredImage"
                 type="url"
                 placeholder="https://res.cloudinary.com/..."
                 className="w-full px-4 py-3 bg-[#1a1a1a] border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              /> */}
+              <input
+                name="featuredImage"
+                type="file"
+                accept="image/*"
+                className="w-full px-4 py-3 bg-[#1a1a1a] border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
+
             </div>
 
             {/* Category + Tags + Status */}

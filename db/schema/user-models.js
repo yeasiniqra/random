@@ -30,5 +30,6 @@ const userSchema = new Schema({
   },
 });
 
-export const userModel =
-  mongoose.models.yeasinusers || mongoose.model("yeasinusers", userSchema);
+export const userModel = mongoose.models?.users || mongoose.model("users", userSchema);
+
+// export const postsModel = mongoose.models.posts || mongoose.model("posts", postSchema);

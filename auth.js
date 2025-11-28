@@ -1,10 +1,12 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
-import { userX } from "./db/schema/user"
+import { userModel } from "./db/schema/user-models"
 
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  session: { strategy: "jwt" },
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     Credentials({
       credentials: {
@@ -14,13 +16,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
 
 
-        const user = await userX.findOne({ email: credentials.email });
+        const user = await userModel.findOne({ email: credentials.email });
 
         if (!user) {
           throw new Error("User not found.");
         }
 
-        const isValidPassword = await bcrypt.compare(
+        const isValidPassword = bcrypt.compare(
           credentials.password,
           user.password
         );
@@ -33,6 +35,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
-  session: { strategy: "jwt" },
-  secret: process.env.NEXTAUTH_SECRET,
+
 })

@@ -19,6 +19,7 @@ export const POST = async (request) => {
       tags,
       status,
       isEditorsPick,
+      authorName
     } = body;
 
     const newPost = await createPost({
@@ -33,6 +34,7 @@ export const POST = async (request) => {
       tags,
       status,
       isEditorsPick,
+      authorName
     });
 
     return NextResponse.json(

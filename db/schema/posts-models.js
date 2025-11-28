@@ -37,6 +37,11 @@ const postSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     },
+     authorName: {
+      type: String,
+      required: true,
+      trim: true
+    },
     tags: [
       {
         type: String
