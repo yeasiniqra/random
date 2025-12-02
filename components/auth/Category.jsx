@@ -6,7 +6,6 @@ import React from 'react';
 const Category = async () => {
     const categories = await getAllCategory();
     const session = await auth();
-    console.log("session", session);
     return (
         <div className="flex gap-2.5 justify-center bg-gray-900">
              {session && (

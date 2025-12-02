@@ -1,11 +1,23 @@
+import { auth } from '@/auth';
+import CommentForm from '@/components/auth/CommentForm';
+import CommentList from '@/components/auth/CommentList';
 import { getPostsBySlug } from '@/db/query/queries';
 import Image from 'next/image';
 
+export async function generateMetadata({params}){
+    const {slug} = await params;
+   const eventInfo = await getPostsBySlug(slug);
+
+   return{
+      title : `${eventInfo?.title}`,
+      description : `${eventInfo?.content}`,
+   }
+}
+
 const SinglePost = async ({params}) => {
     const {slug} = await params;
-    console.log("slug", slug);
     const post = await getPostsBySlug(slug);
-    console.log("post", post);
+    const session = await auth();
     return (
         <div>
              <div className="border p-1.5 w-full" key={post._id}>
@@ -20,6 +32,14 @@ const SinglePost = async ({params}) => {
                 <p className="text-sm text-gray-600">{post.content}</p>
                 <p className="text-sm text-gray-600">Author Name :{post.authorName}</p>
             </div>
+             {session ? (
+                <CommentForm postId={post._id.toString()} user={session.user} />
+            ) : (
+                <p>You must login to comment.</p>
+            )}
+            <>
+            <CommentList postId={post._id.toString()} />
+            </>
         </div>
     );
 };

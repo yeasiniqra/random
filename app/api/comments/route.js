@@ -1,30 +1,22 @@
-import { createPost } from "@/db/query/queries";
+import { dbConnect } from "@/db/dbConnection/dbConnection";
+import { commentModel } from "@/db/schema/comments-models";
 import { NextResponse } from "next/server";
 
 
-export const POST = async (request) =>{
+export async function POST(req) {
+  await dbConnect();
+  const body = await req.json();
 
-    try {
-        const body = await request.json();
-        const {name, email, phone} = request;
+  if (!body.userName) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
 
-        const finalData = {
-            name, email, phone
-        }
+  const newComment = await commentModel.create({
+    postId: body.postId,
+    comments: body.text,
+    userId: body.userId || null,
+    userName: body.userName,
+  });
 
-        const newCmt = await createPost(finalData);
-
-        return NextResponse.json(
-             { message: "Comment created successfully", comment: newCmt },
-             { status: 201 }
-        )
-        
-    } catch (error) {
-         console.error("Error:", err);
-            return NextResponse.json(
-            { message: err.message || "Something went wrong" },
-            { status: 500 }
-        );
-    }
-
+  return NextResponse.json(newComment, { status: 201 });
 }

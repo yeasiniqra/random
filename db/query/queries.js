@@ -5,6 +5,7 @@ import { categoryModel } from "../schema/category-models";
 import { postsModel } from "../schema/posts-models";
 import { userModel } from "../schema/user-models";
 import { signIn } from "@/auth";
+import { commentModel } from "../schema/comments-models";
 
 export async function createUser(user) {
   await dbConnect();
@@ -43,6 +44,12 @@ export async function createPost(data) {
   await dbConnect();
   const post = await postsModel.create(data);
   return post;
+}
+
+export async function getAllComments(postId) {
+  await dbConnect();
+  const comments = await commentModel.find({ postId:postId }).lean();
+  return comments;
 }
 
 // export async function getPostsByCategory(categoryName) {
